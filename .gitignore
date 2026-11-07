@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+startrack_out/
+out*/
+syn/
+*.mp4
