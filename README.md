@@ -62,3 +62,20 @@ python tests/make_synthetic.py syn            # fake sky: 2 clips + a photo fold
 python startrack.py syn/clip1.mp4 syn/clip2.mp4 -o out_video
 python tests/evaluate.py out_video/tracks.csv syn/gt.npz
 ```
+
+## Star trail timelapse (`star_trails.py`)
+Stacks a folder of shots into a star trail image and a video of the trails building up.
+Stars are found per frame from the brightness histogram: the sky background is the main peak, and anything brighter than `peak + k × sky noise` counts as a star. Only those highlights are carried forward (lighten blend), so the sky and foreground don't brighten over time.
+
+```bash
+pip install numpy opencv-python   # rawpy for RAW, ffmpeg for the video
+python star_trails.py night_photos/ -o trails_out --fps 24
+```
+
+| file | contents |
+|---|---|
+| `frames/trail_00001.jpg …` | cumulative frames, full resolution, JPEG quality 100 (4:4:4) |
+| `star_trails_final.jpg` | finished trail image |
+| `star_trails_timelapse.mp4` | stacking video (needs ffmpeg) |
+
+Tuning: `--k` (default 6, lower = fainter stars), `--min-area` (drop hot pixels), `--feather`, `--debug` (saves star masks).
